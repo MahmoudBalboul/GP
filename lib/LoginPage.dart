@@ -1,25 +1,22 @@
-// ignore_for_file: file_names
 import 'package:agarly/HomeScreen.dart';
 import 'package:agarly/signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required String title, required String rentBuyOption}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-  // ignore: unused_field
   String _errorMessage = '';
   String? _emailErrorMessage;
   String? _passwordErrorMessage;
+  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +24,8 @@ class _MyHomePageState extends State<MyHomePage> {
       bottom: false,
       top: false,
       child: Scaffold(
-        extendBody: true, // Extend the body behind the bottom bar
-        backgroundColor:
-            Colors.transparent, // Set background color to transparent
+        extendBody: true,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 233, 188, 124),
         ),
@@ -43,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(25.0),
+              padding: EdgeInsets.all(25.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,8 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 250.0,
                     ),
                   ),
-                  const SizedBox(height: 16.0),
-                  const Center(
+                  SizedBox(height: 16.0),
+                  Center(
                     child: Text(
                       'Welcome Back',
                       style: TextStyle(
@@ -68,11 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 25.0),
+                  SizedBox(height: 25.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Email',
                         style: TextStyle(
                           fontSize: 15,
@@ -86,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (_emailErrorMessage != null)
                         Text(
                           _emailErrorMessage!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.red,
                             fontSize: 12.0,
                           ),
@@ -99,23 +95,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         child: TextFormField(
                           controller: _emailController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Please Enter Your Email',
                             labelStyle: TextStyle(color: Colors.black),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 7.0),
                           ),
-                          style: const TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 25.0),
+                  SizedBox(height: 25.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Password',
                         style: TextStyle(
                           fontSize: 15,
@@ -129,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (_passwordErrorMessage != null)
                         Text(
                           _passwordErrorMessage!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.red,
                             fontSize: 12.0,
                           ),
@@ -142,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         child: TextFormField(
                           controller: _passwordController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Please Enter Your Password',
                             labelStyle:
                                 TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
@@ -150,8 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 7.0),
                           ),
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0)),
+                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           obscureText: true,
                         ),
                       ),
@@ -163,21 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          _signInWithEmailAndPassword();
-                          setState(() {
-                            _emailErrorMessage = _emailController.text.isEmpty
-                                ? 'Email cannot be empty.'
-                                : null;
-                            _passwordErrorMessage =
-                                _passwordController.text.isEmpty
-                                    ? 'Password cannot be empty.'
-                                    : null;
-                          });
-
-                          if (_emailErrorMessage == null &&
-                              _passwordErrorMessage == null) {
-                            // Perform login functionality
-                          }
+                          _validateAndSignIn();
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(200, 50),
@@ -234,6 +215,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 25.0),
+                  Center(
+                    child: CustomSwitch(
+                      value: _isChecked,
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked = value;
+                        });
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -243,19 +235,214 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // Function to sign in with email and password
+  void _validateAndSignIn() {
+    setState(() {
+      _emailErrorMessage =
+          _emailController.text.isEmpty ? 'Email cannot be empty.' : null;
+      _passwordErrorMessage =
+          _passwordController.text.isEmpty ? 'Password cannot be empty.' : null;
+    });
+
+    if (_emailErrorMessage == null && _passwordErrorMessage == null) {
+      _signInWithEmailAndPassword();
+    }
+  }
+
   void _signInWithEmailAndPassword() {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text)
         .then((value) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => const HomeScreen(
+                    rentBuyOption: '_rentBuyIndex',
+                    title: '',
+                  )));
     }).catchError((error) {
-      // Handle sign-in errors and display error message
       setState(() {
         _errorMessage = 'Invalid email or password. Please try again.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
       });
     });
+  }
+}
+
+class CustomSwitch extends StatefulWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const CustomSwitch({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _CustomSwitchState createState() => _CustomSwitchState();
+}
+
+class _CustomSwitchState extends State<CustomSwitch> {
+  bool _isChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isChecked = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(CustomSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _isChecked = widget.value;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isChecked = !_isChecked;
+          widget.onChanged(_isChecked);
+        });
+      },
+      child: Container(
+        width: 85,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(115),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 28,
+              offset: Offset(0, 30),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 22,
+              offset: Offset(-28, 28),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 0,
+              offset: Offset(0, 30),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.6),
+              blurRadius: 0,
+              offset: Offset(0, 1),
+            
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              bottom: 0,
+              left: _isChecked ? null : 10.0,
+              right: _isChecked ? 10.0 : null,
+              child: Text(
+                _isChecked ? 'OFF' : 'ON',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _isChecked ? Colors.white : Color(0xFF636161),
+                  fontSize: 17,
+                  fontFamily: 'sans-serif',
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 1,
+                      color: Colors.black,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeIn,
+              left: _isChecked ? 50 : 0,
+              right: _isChecked ? 0 : 50,
+              top: 4,
+              bottom: 4,
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                decoration: BoxDecoration(
+                  color: _isChecked ? Color(0xFF232323) : Colors.black,
+                  borderRadius: BorderRadius.circular(400),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: Offset(0, -3),
+                     
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 200,
+                      offset: Offset(0, -200),
+                      
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Container(
+                    width: 40,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: _isChecked ? Color(0xFF232323) : Colors.black,
+                      borderRadius: BorderRadius.circular(400),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          blurRadius: 8,
+                          offset: Offset(8, -4),
+                        
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          blurRadius: 8,
+                          offset: Offset(-8, -4),
+                        
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          blurRadius: 4,
+                          offset: Offset(0, 3),
+                   
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 200,
+                          offset: Offset(0, -200),
+                  
+                        ),
+                        BoxShadow(
+                          color: Color(0xFFB4B4B4).withOpacity(0.2),
+                          blurRadius: 200,
+                          offset: Offset(0, -200),
+                  
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

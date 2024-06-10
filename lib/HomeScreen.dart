@@ -4,10 +4,12 @@ import 'dart:async';
 
 // ignore: depend_on_referenced_packages, library_prefixes
 import 'package:agarly/NavBar.dart' as NavBar;
+import 'package:agarly/Search.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen(
+      {super.key, required String rentBuyOption, required String title});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -54,7 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Search()),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.add),

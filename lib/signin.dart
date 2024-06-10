@@ -1,4 +1,4 @@
-import 'package:agarly/LoginPage.dart';
+import 'package:agarly/HomeScreen.dart';
 import 'package:agarly/PreHomeScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -136,19 +136,19 @@ class _SignInState extends State<SignIn> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(5.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   'assets/Group_2.png',
-                  width: 80.0, // Adjust width as desired
-                  height: 80.0, // Adjust height as desired
+                  width: 30.0, // Adjust width as desired
+                  height: 30.0, // Adjust height as desired
                 ),
 
                 // Image placed above "Sign Up" text
                 const SizedBox(
-                  height: 5.0,
+                  height: 0.0,
                 ), // Added space between image and "Sign Up" text
                 const Align(
                   alignment: Alignment.topCenter,
@@ -157,15 +157,15 @@ class _SignInState extends State<SignIn> {
                       Text(
                         'Sign Up',
                         style: TextStyle(
-                            fontSize: 38.0, fontWeight: FontWeight.bold),
+                            fontSize: 30.0, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 20.0,
+                        height: 0.0,
                       ), // Added SizedBox to move "Sign Up" text down
                     ],
                   ),
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 0.0),
                 Row(
                   children: [
                     Expanded(
@@ -209,7 +209,7 @@ class _SignInState extends State<SignIn> {
                             style: TextStyle(
                                 fontSize: 18.0, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 5.0),
+                          const SizedBox(height: 0.0),
                           TextFormField(
                             controller: _lastNameController,
                             decoration: InputDecoration(
@@ -233,7 +233,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 0.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -242,7 +242,7 @@ class _SignInState extends State<SignIn> {
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 5.0),
+                    const SizedBox(height: 0.0),
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -263,7 +263,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 0.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -272,7 +272,7 @@ class _SignInState extends State<SignIn> {
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 10.0),
+                    const SizedBox(height: 0.0),
                     TextFormField(
                       controller: _phoneNumberController,
                       decoration: InputDecoration(
@@ -294,7 +294,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 0.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -303,7 +303,7 @@ class _SignInState extends State<SignIn> {
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 10.0),
+                    const SizedBox(height: 5.0),
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
@@ -325,7 +325,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 5.0),
                 Center(
                   child: SizedBox(
                     width: 300.0,
@@ -349,7 +349,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 const SizedBox(
-                    height: 10.0), // Added SizedBox to move "Sign Up" text down
+                    height: 0.0), // Added SizedBox to move "Sign Up" text down
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -362,7 +362,10 @@ class _SignInState extends State<SignIn> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MyHomePage()),
+                              builder: (context) => const HomeScreen(
+                                    rentBuyOption: '',
+                                    title: '',
+                                  )),
                         );
                         // Add your sign in logic here
                       },

@@ -56,7 +56,10 @@ class PreHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const MyHomePage()),
+                          builder: (context) => const MyHomePage(
+                                title: '',
+                                rentBuyOption: '',
+                              )),
                     );
                   },
                 ),
